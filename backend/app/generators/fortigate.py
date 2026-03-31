@@ -1,16 +1,17 @@
 from app.schemas.domain import DeviceIntent
-
-
+from app.core.constants import FORTIGATE_BASE
+from app.core.constants import FORTI_FOOTER
 def generate_fortigate(data: DeviceIntent) -> str:
-    lines = [
-        f"# Full Migration for {data.hostname}",
+    lines = [FORTIGATE_BASE]
+
+    # Adaugă hostname-ul peste baza fixă
+    lines.extend([
         "config system global",
         f'    set hostname "{data.hostname}"',
         "end",
         "",
         "config system interface"
-    ]
-
+    ])
     generated_interfaces = set()
 
     for iface in data.interfaces:
@@ -37,5 +38,5 @@ def generate_fortigate(data: DeviceIntent) -> str:
             lines.append(f"        set gateway {route.gateway}")
             lines.append("    next")
         lines.append("end")
-
+    lines.append(FORTI_FOOTER)
     return "\n".join(lines)

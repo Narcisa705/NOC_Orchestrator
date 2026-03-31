@@ -1,11 +1,13 @@
 from app.schemas.domain import DeviceIntent
-
+from app.core.constants import CISCO_BASE
+from app.core.constants import CISCO_FOOTER
 
 def generate_cisco(data: DeviceIntent) -> str:
-    lines = [
-        f"! Full Migration for {data.hostname}",
-        f"hostname {data.hostname}"
-    ]
+    # Începem cu template-ul fix (partea de SSH, logging, etc.)
+    lines = [CISCO_BASE]
+
+    # Adăugăm partea dinamică extrasă din config-ul vechi
+    lines.append(f"hostname {data.hostname}")
 
     generated_vlans = set()
 
@@ -24,5 +26,5 @@ def generate_cisco(data: DeviceIntent) -> str:
 
     for route in data.static_routes:
         lines.append(f"ip route {route.destination} {route.mask} {route.gateway}")
-
+    lines.append(CISCO_FOOTER)
     return "\n".join(lines)

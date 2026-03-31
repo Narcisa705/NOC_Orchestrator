@@ -80,6 +80,7 @@ end`);
   const resetState = () => {
     setAnalysis(null);
     setGeneratedConfig("");
+
     setError("");
   };
 
@@ -185,6 +186,9 @@ end`);
             <button className="secondary-btn" onClick={runConvert} disabled={loading}>
               {loading ? "Converting..." : "Convert"}
             </button>
+<button className="ghost-btn" onClick={resetState} style={{ borderColor: "#ef4444", color: "#ef4444" }}>
+    Clear All
+  </button>
           </div>
         </div>
 
