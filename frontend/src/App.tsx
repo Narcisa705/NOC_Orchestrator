@@ -131,6 +131,29 @@ end`);
       setLoading(false);
     }
   };
+const downloadConfig = () => {
+  if (!generatedConfig) return;
+
+  const element = document.createElement("a");
+  const file = new Blob([generatedConfig], { type: "text/plain" });
+  element.href = URL.createObjectURL(file);
+  element.download = `${analysis?.data.hostname || "config"}_migrated.txt`;
+  document.body.appendChild(element);
+  element.click();
+  document.body.removeChild(element);
+};
+const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const file = event.target.files?.[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const content = e.target?.result as string;
+    setRawConfig(content);
+    resetState(); // Opțional: curățăm analizele vechi când încărcăm un fișier nou
+  };
+  reader.readAsText(file);
+};
 
   // ------------------ UI ------------------
 
@@ -196,6 +219,25 @@ end`);
           <button className="ghost-btn" onClick={loadCiscoSample}>Cisco Sample</button>
           <button className="ghost-btn" onClick={loadHuaweiSample}>Huawei Sample</button>
           <button className="ghost-btn" onClick={loadFortiGateSample}>FortiGate Sample</button>
+          <label className="ghost-btn" style={{ cursor: "pointer", display: "inline-block" }}>
+    Upload File
+    <input
+      type="file"
+      accept=".txt,.cfg,.conf"
+      onChange={handleFileUpload}
+      style={{ display: "none" }}
+    />
+  </label>
+    <button
+    className="ghost-btn"
+    onClick={downloadConfig}
+    disabled={!generatedConfig}
+    style={{ background: "linear-gradient(180deg, #8b5cf6 0%, #7c3aed 100%)" }} // Culoare violet pentru download
+  >
+    Download Result
+  </button>
+
+
         </div>
       </section>
 
